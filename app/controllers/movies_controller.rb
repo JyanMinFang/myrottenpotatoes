@@ -7,7 +7,8 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @movies = params["sort"].nil? ? Movie.all : Movie.all(order: params["sort"])
+    @sort = params["sort"]
   end
 
   def new
