@@ -9,7 +9,17 @@ class MoviesController < ApplicationController
   def index
     whereClause = params[:ratings].nil? ? {} : {rating: params[:ratings].keys}
     @movies = params["sort"].nil? ? Movie.where(whereClause) : Movie.where(whereClause).order(params["sort"])
+
     @sort = params["sort"]
+
+    @sort_title = { "sort"=> "title" }
+    @sort_release_date = { "sort"=> "release_date" }
+    unless params[:ratings].nil?
+      params[:ratings].each do |key, val|
+        @sort_title["ratings[" + key + "]"] = val
+        @sort_release_date["ratings[" + key + "]"] = val
+      end
+    end
     @all_ratings = Movie.allratings()
   end
 
