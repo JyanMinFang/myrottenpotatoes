@@ -7,8 +7,10 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = params["sort"].nil? ? Movie.all : Movie.all(order: params["sort"])
+    whereClause = params[:ratings].nil? ? {} : {rating: params[:ratings].keys}
+    @movies = params["sort"].nil? ? Movie.where(whereClause) : Movie.where(whereClause).order(params["sort"])
     @sort = params["sort"]
+    @all_ratings = Movie.allratings()
   end
 
   def new
