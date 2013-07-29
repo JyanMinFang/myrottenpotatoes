@@ -7,6 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.allratings()
+
+    if params[:ratings].nil? && params["sort"].nil? && (session[:indexfilter].nil? == false)
+      flash.keep
+      redirect_to movies_path + "?" + session[:indexfilter]
+    end
+
     whereClause = params[:ratings].nil? ? {} : {rating: params[:ratings].keys}
     @movies = params["sort"].nil? ? Movie.where(whereClause) : Movie.where(whereClause).order(params["sort"])
 
@@ -20,7 +27,7 @@ class MoviesController < ApplicationController
         @sort_release_date["ratings[" + key + "]"] = val
       end
     end
-    @all_ratings = Movie.allratings()
+    session[:indexfilter] = request.query_string.length > 0 ? request.query_string : nil
   end
 
   def new
